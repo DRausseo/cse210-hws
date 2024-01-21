@@ -4,15 +4,15 @@ class Program
 {
     static void Main()
     {
-        // Solicitar el primer nombre
+        // Ask the user for their name.
         Console.Write("What is your first name? ");
         string firstName = Console.ReadLine();
 
-        // Solicitar el apellido
+        // Ask the user for their last name
         Console.Write("What is your last name? ");
         string lastName = Console.ReadLine();
 
-        // Mostrar el resultado
+        // Show the results
         Console.WriteLine($"Your name is {lastName}, {firstName} {lastName}.");
     }
 }
