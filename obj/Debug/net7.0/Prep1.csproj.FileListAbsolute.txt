@@ -4,7 +4,6 @@ C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\o
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.AssemblyInfoInputs.cache
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.AssemblyInfo.cs
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.csproj.CoreCompileInputs.cache
-C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.sourcelink.json
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.dll
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\refint\Prep1.dll
 C:\Users\danny\OneDrive\Área de Trabalho\cse 210\cse210-hws\csharp-prep\Prep1\obj\Debug\net7.0\Prep1.pdb
