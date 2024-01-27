@@ -82,3 +82,4 @@ class Fraction
         return (double)_top / _bottom;
     }
 }
+
