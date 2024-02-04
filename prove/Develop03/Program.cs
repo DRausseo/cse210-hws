@@ -1,14 +1,20 @@
+using System;
+using System.Collections.Generic;
+
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
-        string filePath = "C:\\Users\\danny\\OneDrive\\Área de Trabalho\\cse 210\\book-of-mormon-59012-spa.pdf";
-        var nephi3_7 = PdfLoader.LoadScriptureFromFile(filePath, "1 Nephi 3:7");
+        // Crear una referencia para un solo versículo (ejemplo: "John 3:16")
+        var john316 = new Reference("John 3:16");
+
+        // Crear un pasaje de escritura basado en la referencia y el texto
+        var john316Scripture = new Scripture(john316, "For God so loved the world...");
 
         while (true)
         {
             Console.Clear();
-            nephi3_7.Display();
+            john316Scripture.Display();
 
             Console.WriteLine("Press Enter to continue or type 'quit' to exit:");
             string userInput = Console.ReadLine();
@@ -16,71 +22,170 @@ class Program
             if (userInput.ToLower() == "quit")
                 break;
 
-            nephi3_7.HideRandomWords();
+            john316Scripture.HideRandomWords();
         }
     }
 }
+
+class Reference
+{
+    private readonly string book;
+    private readonly int chapter;
+    private readonly int? startVerse;
+    private readonly int? endVerse;
+
+    public Reference(string reference)
+    {
+        // Implementa la lógica para parsear la referencia
+        string[] parts = reference.Split(' ');
+
+        // Asegúrate de manejar casos de referencia no válidos
+        if (parts.Length >= 2)
+        {
+            book = parts[0];
+
+            // Lógica para parsear el capítulo y versículos...
+            // Ejemplo: "John 3:16" se divide en ["John", "3:16"]
+            // Debes asegurarte de que el formato sea correcto antes de realizar los análisis
+
+            // Parsea el capítulo
+            if (int.TryParse(parts[1].Split(':')[0], out int parsedChapter))
+            {
+                chapter = parsedChapter;
+            }
+            else
+            {
+                Console.WriteLine($"Error parsing chapter in reference: {reference}");
+                return;
+            }
+
+            // Parsea los versículos
+            string[] verses = parts[1].Split(':')[1].Split('-');
+            if (int.TryParse(verses[0], out int parsedStartVerse))
+            {
+                startVerse = parsedStartVerse;
+            }
+            else
+            {
+                Console.WriteLine($"Error parsing start verse in reference: {reference}");
+                return;
+            }
+
+            // Verifica si hay un versículo final
+            if (verses.Length > 1 && int.TryParse(verses[1], out int parsedEndVerse))
+            {
+                endVerse = parsedEndVerse;
+            }
+            else
+            {
+                endVerse = null;
+            }
+        }
+    }
+
+    public string GetDisplayText()
+    {
+        // Implementa la lógica para obtener el texto de visualización
+        if (startVerse.HasValue && endVerse.HasValue)
+        {
+            return $"{book} {chapter}:{startVerse}-{endVerse}";
+        }
+        else
+        {
+            return $"{book} {chapter}:{startVerse}";
+        }
+    }
+}
+
 class Scripture
 {
-    private readonly string reference;
-    private string text;
+    private readonly Reference reference;
+    private List<Word> words;
 
-    public Scripture(string reference, string text)
+    public Scripture(Reference reference, string text)
     {
         this.reference = reference;
-        this.text = text;
+        InitializeWords(text);
+    }
+
+    private void InitializeWords(string text)
+    {
+        // Crea una lista de palabras a partir del texto
+        string[] wordArray = text.Split(' ');
+        words = new List<Word>();
+
+        foreach (var wordText in wordArray)
+        {
+            words.Add(new Word(wordText));
+        }
     }
 
     public void Display()
     {
-        Console.WriteLine($"{reference}: {text}");
+        Console.WriteLine($"{reference.GetDisplayText()}: {GetVisibleText()}");
     }
 
     public void HideRandomWords()
     {
-        var words = text.Split(' ');
-        var random = new Random();
-        int wordsToHide = random.Next(1, words.Length / 2);
+        // Implementa la lógica para ocultar palabras aleatorias
+        Random random = new Random();
 
-        for (int i = 0; i < wordsToHide; i++)
+        foreach (var word in words)
         {
-            int index = random.Next(words.Length);
-            words[index] = "*****";
-        }
-
-        text = string.Join(' ', words);
-    }
-}
-using System;
-using System.IO;
-using System.Text;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Text;
-
-class PdfLoader
-{
-    public static Scripture LoadScriptureFromFile(string filePath, string reference)
-    {
-        try
-        {
-            using (PdfReader pdfReader = new PdfReader(filePath))
+            if (random.Next(2) == 0) // 50% de probabilidad de ocultar cada palabra
             {
-                var text = new StringBuilder();
-
-                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
-                {
-                    var strategy = new SimpleTextExtractionStrategy();
-                    string currentPageText = PdfTextExtractor.GetTextFromPage(pdfReader.GetPage(page), strategy);
-                    text.Append(currentPageText);
-                }
-
-                return new Scripture(reference, text.ToString());
+                word.Hide();
             }
         }
-        catch (Exception ex)
+    }
+
+    private string GetVisibleText()
+    {
+        // Obtiene el texto visible (sin las palabras ocultas)
+        List<string> visibleWords = new List<string>();
+
+        foreach (var word in words)
         {
-            Console.WriteLine($"Error loading scripture from file: {ex.Message}");
-            return new Scripture("Error", "Unable to load scripture from file.");
+            if (!word.IsHidden())
+            {
+                visibleWords.Add(word.GetDisplayText());
+            }
         }
+
+        return string.Join(' ', visibleWords);
+    }
+}
+
+class Word
+{
+    private string text;
+    private bool isHidden;
+
+    public Word(string text)
+    {
+        this.text = text;
+        this.isHidden = false;
+    }
+
+    public void Hide()
+    {
+        isHidden = true;
+    }
+
+    public void Show()
+    {
+        isHidden = false;
+    }
+
+    public bool IsHidden()
+    {
+        return isHidden;
+    }
+
+    public string GetDisplayText()
+    {
+        return isHidden
+            ? "*****"
+            : text;
     }
 }
