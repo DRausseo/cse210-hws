@@ -5,10 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Crear una referencia para un solo versículo (ejemplo: "John 3:16")
         var john316 = new Reference("John 3:16");
-
-        // Crear un pasaje de escritura basado en la referencia y el texto
         var john316Scripture = new Scripture(john316, "For God so loved the world...");
 
         while (true)
@@ -19,39 +16,32 @@ class Program
             Console.WriteLine("Press Enter to continue or type 'quit' to exit:");
             string userInput = Console.ReadLine();
 
-            if (userInput.ToLower() == "quit")
+            if (userInput.ToLower() == "quit" || john316Scripture.AllWordsHidden())
                 break;
 
-            john316Scripture.HideRandomWords();
+            john316Scripture.HideRandomWord();
         }
     }
 }
 
 class Reference
 {
-    private readonly string book;
-    private readonly int chapter;
-    private readonly int? startVerse;
-    private readonly int? endVerse;
+    public string Book { get; }
+    public int Chapter { get; }
+    public int? StartVerse { get; }
+    public int? EndVerse { get; }
 
     public Reference(string reference)
     {
-        // Implementa la lógica para parsear la referencia
         string[] parts = reference.Split(' ');
 
-        // Asegúrate de manejar casos de referencia no válidos
         if (parts.Length >= 2)
         {
-            book = parts[0];
+            Book = parts[0];
 
-            // Lógica para parsear el capítulo y versículos...
-            // Ejemplo: "John 3:16" se divide en ["John", "3:16"]
-            // Debes asegurarte de que el formato sea correcto antes de realizar los análisis
-
-            // Parsea el capítulo
             if (int.TryParse(parts[1].Split(':')[0], out int parsedChapter))
             {
-                chapter = parsedChapter;
+                Chapter = parsedChapter;
             }
             else
             {
@@ -59,11 +49,10 @@ class Reference
                 return;
             }
 
-            // Parsea los versículos
             string[] verses = parts[1].Split(':')[1].Split('-');
             if (int.TryParse(verses[0], out int parsedStartVerse))
             {
-                startVerse = parsedStartVerse;
+                StartVerse = parsedStartVerse;
             }
             else
             {
@@ -71,28 +60,26 @@ class Reference
                 return;
             }
 
-            // Verifica si hay un versículo final
             if (verses.Length > 1 && int.TryParse(verses[1], out int parsedEndVerse))
             {
-                endVerse = parsedEndVerse;
+                EndVerse = parsedEndVerse;
             }
             else
             {
-                endVerse = null;
+                EndVerse = null;
             }
         }
     }
 
     public string GetDisplayText()
     {
-        // Implementa la lógica para obtener el texto de visualización
-        if (startVerse.HasValue && endVerse.HasValue)
+        if (StartVerse.HasValue && EndVerse.HasValue)
         {
-            return $"{book} {chapter}:{startVerse}-{endVerse}";
+            return $"{Book} {Chapter}:{StartVerse}-{EndVerse}";
         }
         else
         {
-            return $"{book} {chapter}:{startVerse}";
+            return $"{Book} {Chapter}:{StartVerse}";
         }
     }
 }
@@ -110,8 +97,7 @@ class Scripture
 
     private void InitializeWords(string text)
     {
-        // Crea una lista de palabras a partir del texto
-        string[] wordArray = text.Split(' ');
+        string[] wordArray = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         words = new List<Word>();
 
         foreach (var wordText in wordArray)
@@ -125,23 +111,36 @@ class Scripture
         Console.WriteLine($"{reference.GetDisplayText()}: {GetVisibleText()}");
     }
 
-    public void HideRandomWords()
+    public void HideRandomWord()
     {
-        // Implementa la lógica para ocultar palabras aleatorias
         Random random = new Random();
+        int visibleWordCount = words.Count(word => !word.IsHidden());
 
-        foreach (var word in words)
+        if (visibleWordCount == 0)
+            return;
+
+        int indexToHide = random.Next(visibleWordCount);
+        for (int i = 0, hiddenCount = 0; i < words.Count; i++)
         {
-            if (random.Next(2) == 0) // 50% de probabilidad de ocultar cada palabra
+            if (!words[i].IsHidden())
             {
-                word.Hide();
+                if (hiddenCount == indexToHide)
+                {
+                    words[i].Hide();
+                    break;
+                }
+                hiddenCount++;
             }
         }
     }
 
+    public bool AllWordsHidden()
+    {
+        return words.All(word => word.IsHidden());
+    }
+
     private string GetVisibleText()
     {
-        // Obtiene el texto visible (sin las palabras ocultas)
         List<string> visibleWords = new List<string>();
 
         foreach (var word in words)
@@ -172,11 +171,6 @@ class Word
         isHidden = true;
     }
 
-    public void Show()
-    {
-        isHidden = false;
-    }
-
     public bool IsHidden()
     {
         return isHidden;
@@ -184,8 +178,6 @@ class Word
 
     public string GetDisplayText()
     {
-        return isHidden
-            ? "*****"
-            : text;
+        return isHidden ? "*****" : text;
     }
 }
