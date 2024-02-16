@@ -1,3 +1,6 @@
+//Project Option: Open-ended project
+//For the open-ended project option, I plan to develop a program that facilitates personal finance management. The program will allow users to track their income, expenses, savings, and investments. It will provide visualizations and reports to help users analyze their financial habits and make informed decisions about budgeting and financial planning.
+
 using System;
 using System.Collections.Generic;
 
