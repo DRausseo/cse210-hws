@@ -205,7 +205,7 @@ public class GoalManager
     }
 }
 
------------------------------------------------------------------------------------------------------------
+
 public abstract class Goal
 {
     public string _shortName { get; protected set; }
@@ -227,7 +227,7 @@ public abstract class Goal
     }
     public abstract string GetStringRepresentation();
 }
---------------------------------------------------------------------------------------
+
     public class SimpleGoal : Goal
 {
     public bool _isComplete { get; private set; }
@@ -253,7 +253,7 @@ public abstract class Goal
         return $"SimpleGoal:{_shortName}:{_description}:{_points}:{_isComplete}";
     }
 }
------------------------------------------------------------------------------------------------
+
 public class EternalGoal : Goal
 {
     public EternalGoal(string shortName, string description, int points)
@@ -277,7 +277,7 @@ public class EternalGoal : Goal
         return $"EternalGoal:{_shortName}:{_description}:{_points}";
     }
 }
----------------------------------------------------------------------------------------------
+
 public class ChecklistGoal : Goal
 {
     private int _amountCompleted;
