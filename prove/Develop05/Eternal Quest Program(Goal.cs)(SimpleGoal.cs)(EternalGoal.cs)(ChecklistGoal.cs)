@@ -297,3 +297,58 @@ public class SimpleGoal : Goal
         return $"SimpleGoal: {ShortName}:{Description}:{Points}";
     }
 }
+
+public class EternalGoal : Goal
+{
+    public EternalGoal(string shortName, string description, int points)
+        : base(shortName, description, points)
+    {
+    }
+
+    public override void RecordEvent()
+    {
+        // Implementación específica de EternalGoal
+    }
+
+    public override bool IsComplete()
+    {
+        // Implementación específica de EternalGoal
+        return false;
+    }
+
+    public override string GetStringRepresentation()
+    {
+        // Implementación específica de EternalGoal
+        return string.Empty;
+    }
+}
+
+public class ChecklistGoal : Goal
+{
+    private int target;
+    private int bonus;
+
+    public ChecklistGoal(string shortName, string description, int points, int target, int bonus)
+        : base(shortName, description, points)
+    {
+        this.target = target;
+        this.bonus = bonus;
+    }
+
+    public override void RecordEvent()
+    {
+        // Implementación específica de ChecklistGoal
+    }
+
+    public override bool IsComplete()
+    {
+        // Implementación específica de ChecklistGoal
+        return false;
+    }
+
+    public override string GetStringRepresentation()
+    {
+        // Implementación específica de ChecklistGoal
+        return string.Empty;
+    }
+}
